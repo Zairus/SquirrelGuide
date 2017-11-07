@@ -1,0 +1,12 @@
+0.0.1-alpha
+Created the mod
+
+-Added text output to blocks been looked at
+
+0.0.2-alpha
+Bug fix and improvements
+
+-Removed player name from output
+-Added commands sg_on and sg_off to turn on or off
+-Fixed bug when looking at bed
+-Added credits in mcmod.info
