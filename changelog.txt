@@ -10,3 +10,10 @@ Bug fix and improvements
 -Added commands sg_on and sg_off to turn on or off
 -Fixed bug when looking at bed
 -Added credits in mcmod.info
+
+0.0.3-alpha
+New features
+
+-Now it says the correct name depending on the item block
+-It now supports entities
+-Added support for water and lava
