@@ -73,17 +73,6 @@ public class SGEventHandler
 			String say = "";
 			ITextComponent itextcomponent = null;
 			
-			if (rtr_ent != null)
-			{
-				if (rtr_ent.typeOfHit == RayTraceResult.Type.ENTITY && rtr_ent.entityHit != null)
-				{
-					Entity entity = rtr_ent.entityHit;
-					
-					itextcomponent = entity.getDisplayName();
-					say = itextcomponent.getFormattedText();
-				}
-			}
-			
 			if (rtr != null)
 			{
 				if (rtr.typeOfHit == RayTraceResult.Type.BLOCK && rtr.getBlockPos() != null)
@@ -97,7 +86,12 @@ public class SGEventHandler
 					
 					if (dataList.size() > 0 )
 					{
-						say = dataList.get(0).replace("§r", "");
+						say = dataList.get(0);
+						
+						if (say.length() > 1 && say.endsWith("r"))
+						{
+							say = say.substring(0, say.length() - 2);
+						}
 					}
 					else
 					{
@@ -122,6 +116,17 @@ public class SGEventHandler
 				}
 			}
 			
+			if (rtr_ent != null)
+			{
+				if (rtr_ent.typeOfHit == RayTraceResult.Type.ENTITY && rtr_ent.entityHit != null)
+				{
+					Entity entity = rtr_ent.entityHit;
+					
+					itextcomponent = entity.getDisplayName();
+					say = itextcomponent.getFormattedText();
+				}
+			}
+			
 			if (itextcomponent != null && !say.equals(lastName))
 			{
 				lastName = say;
@@ -140,6 +145,9 @@ public class SGEventHandler
 				NarratorChatListener.INSTANCE.clear();
 				mc.ingameGUI.addChatMessage(ChatType.SYSTEM, itextcomponent);
 			}
+			
+			rtr = null;
+			rtr_ent = null;
 		}
 	}
 }

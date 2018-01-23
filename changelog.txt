@@ -17,3 +17,9 @@ New features
 -Now it says the correct name depending on the item block
 -It now supports entities
 -Added support for water and lava
+
+0.0.5-alpha
+Bug fixes
+
+-Improved detecting entities
+-Fixed text output in Mac systems
