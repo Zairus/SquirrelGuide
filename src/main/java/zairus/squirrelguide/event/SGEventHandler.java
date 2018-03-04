@@ -9,9 +9,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -26,6 +31,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import zairus.squirrelguide.SGConfig;
 import zairus.squirrelguide.SGConstants;
+import zairus.squirrelguide.SquirrelGuide;
 
 @SuppressWarnings("deprecation")
 @Mod.EventBusSubscriber(modid = SGConstants.MOD_ID)
@@ -75,12 +81,43 @@ public class SGEventHandler
 			
 			if (rtr != null)
 			{
-				if (rtr.typeOfHit == RayTraceResult.Type.BLOCK && rtr.getBlockPos() != null)
+				
+				if (rtr.getBlockPos() != null)
+				{
+					TileEntity te = world.getTileEntity(rtr.getBlockPos());
+					
+					if (te != null)
+					{
+						if (te.getBlockType() == Blocks.STANDING_SIGN || te.getBlockType() == Blocks.WALL_SIGN)
+						{
+							TileEntitySign sign = (TileEntitySign)te;
+							
+							say = "Sign reads: ";
+							
+							for (int lines = 0; lines < 4; ++lines)
+							{
+								say += sign.signText[lines].getFormattedText() + " ";
+								
+								say = say.replace("§r", "");
+								say = say.replace("§", "");
+								
+								if (say.length() > 1 && say.endsWith("r"))
+									say = say.substring(0, say.length() - 2);
+							}
+							
+							itextcomponent = new TextComponentTranslation(say);
+							
+							SquirrelGuide.logInfo("s: " + say);
+						}
+					}
+				}
+				
+				if (rtr.typeOfHit == RayTraceResult.Type.BLOCK && rtr.getBlockPos() != null && itextcomponent == null)
 				{
 					IBlockState blockState = world.getBlockState(rtr.getBlockPos());
 					Block block = blockState.getBlock();
 					
-					ItemStack stack = new ItemStack(Item.getItemFromBlock(block), 1, block.getMetaFromState(blockState));
+					ItemStack stack = new ItemStack(Item.getItemFromBlock(block), 1, block.getMetaFromState(blockState)); //new ItemStack(block.getItemDropped(blockState, world.rand, 0), 1, block.getMetaFromState(blockState)); //
 					
 					List<String> dataList = stack.getTooltip((EntityPlayer)null, ITooltipFlag.TooltipFlags.NORMAL);
 					
@@ -103,6 +140,11 @@ public class SGEventHandler
 							say = I18n.translateToLocal(say);
 					}
 					
+					if (say.toLowerCase().equals("air"))
+					{
+						say = I18n.translateToFallback(block.getLocalizedName());
+					}
+					
 					if (blockState.getMaterial() == Material.WATER)
 						say = "Water";
 					
@@ -118,7 +160,23 @@ public class SGEventHandler
 			
 			if (rtr_ent != null)
 			{
-				if (rtr_ent.typeOfHit == RayTraceResult.Type.ENTITY && rtr_ent.entityHit != null)
+				if (rtr_ent.getBlockPos() != null)
+				{
+					List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(rtr_ent.getBlockPos()).expand(0.1d, 0.1d, 0.1d));
+					
+					if (entities.size() > 0)
+					{
+						if (entities.get(0) instanceof EntityItem)
+						{
+							EntityItem item = (EntityItem)entities.get(0);
+							
+							say = item.getItem().getItem().getItemStackDisplayName(item.getItem());
+							say = "Item in ground: " + say;
+							itextcomponent = new TextComponentTranslation(say);
+						}
+					}
+				}
+				else if (rtr_ent.typeOfHit == RayTraceResult.Type.ENTITY && rtr_ent.entityHit != null)
 				{
 					Entity entity = rtr_ent.entityHit;
 					

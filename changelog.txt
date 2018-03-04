@@ -1,25 +1,41 @@
+====================================================================================
 0.0.1-alpha
 Created the mod
 
 -Added text output to blocks been looked at
 
+====================================================================================
 0.0.2-alpha
-Bug fix and improvements
 
+Bug fix and improvements
 -Removed player name from output
 -Added commands sg_on and sg_off to turn on or off
 -Fixed bug when looking at bed
 -Added credits in mcmod.info
 
+====================================================================================
 0.0.3-alpha
-New features
 
+New features
 -Now it says the correct name depending on the item block
 -It now supports entities
 -Added support for water and lava
 
+====================================================================================
 0.0.5-alpha
-Bug fixes
 
+Bug fixes
 -Improved detecting entities
 -Fixed text output in Mac systems
+
+====================================================================================
+0.0.6
+
+Bug fixes
+-Double tall plants read as sunflower
+-Door (open or closed) read as “air”. Same with growing wheat or furnaces that are burning (but not empty furnaces)
+
+Features
+-Items someone has dropped on the ground
+-Says name of player in front
+-Now signs are read
